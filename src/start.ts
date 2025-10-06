@@ -1,6 +1,7 @@
 import { select } from "@inquirer/prompts";
 import { Command } from "commander";
 import { execa } from "execa";
+import { initProject } from "./commands";
 
 const program = new Command();
 
@@ -12,8 +13,8 @@ program
 // typed options and arguments
 program
   .command("init")
-  .option("-t, --template <name>", "template name", "aws-serverless")
-  .action(async () => {
+  .argument("<code_name>", "project code name")
+  .action(async (code_name: string) => {
     const template = await select({
       message: "Select a template:",
       choices: [
@@ -23,8 +24,9 @@ program
       ],
     })
     console.log(`Creating project with template: ${template}`);
-    await initTerraformProject(template)
-
+    console.log(`Creating project with code name: ${code_name}`);
+    //await initTerraformProject(template)
+initProject();
 });
 
 // program

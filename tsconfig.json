@@ -11,6 +11,8 @@
     "module": "ESNext",
     "types": ["node"],
     "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],

@@ -22,6 +22,7 @@
   "dependencies": {
     "@inquirer/prompts": "^7.8.6",
     "commander": "^14.0.1",
+    "eta": "^4.0.1",
     "execa": "^9.6.0"
   }
 }

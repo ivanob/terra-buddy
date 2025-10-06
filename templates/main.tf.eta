@@ -1,0 +1,15 @@
+terraform {
+  required_version = ">= 1.6.0, < 2.0.0"
+
+  backend "s3" { # This is the configuration to use a remote-state instead of a local one. So we dont rely on terraform.tfstate.d
+    bucket         = "<%= it.project_codename %>-state-terraform"
+    key            = "staging/terraform.tfstate"
+    region         = "eu-north-1"
+    encrypt        = true
+    dynamodb_table = "terraform-locks" 
+  }
+}
+
+locals {
+  env = terraform.workspace  # Will be "dev" or "prod"
+}
