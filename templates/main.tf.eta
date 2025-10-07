@@ -6,7 +6,7 @@ terraform {
     key            = "staging/terraform.tfstate"
     region         = "<%= it.region %>"
     encrypt        = true
-    dynamodb_table = "<%= it.project_codename %>-fstate-locks" 
+    dynamodb_table = "<%= it.project_codename %>-tfstate-locks" 
   }
 }
 
