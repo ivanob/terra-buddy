@@ -1,7 +1,7 @@
 import { select } from "@inquirer/prompts";
 import { Command } from "commander";
-import { execa } from "execa";
-import { initProject } from "./commands";
+import { initProject, initTerraformProject } from "./commands";
+import { bootstrapTerraformRemoteState } from "./aws-bootstrap/bootstrap-aws-terraform-remote-state";
 
 const program = new Command();
 
@@ -13,8 +13,9 @@ program
 // typed options and arguments
 program
   .command("init")
-  .argument("<code_name>", "project code name")
-  .action(async (code_name: string) => {
+  .argument("<code_name>", "project code name (e.g., myapp, tks, etc.)")
+  .argument("<region>", "AWS region")
+  .action(async (code_name: string, region: string) => {
     const template = await select({
       message: "Select a template:",
       choices: [
@@ -26,7 +27,9 @@ program
     console.log(`Creating project with template: ${template}`);
     console.log(`Creating project with code name: ${code_name}`);
     //await initTerraformProject(template)
-initProject();
+    await bootstrapTerraformRemoteState(code_name + "-tfstate-bucket", code_name + "-tfstate-locks", region);
+    initProject(code_name, region);
+    await initTerraformProject(template);
 });
 
 // program
@@ -46,13 +49,3 @@ program
   });
 
 program.parse(process.argv);
-
-const initTerraformProject = async (template: string) => {
-  // Logic to initialize a Terraform project based on the selected template
-  console.log(`Initializing Terraform project with template: ${template}`);
-  execa("mkdir", ["infra"], { stdio: "inherit" });
-  execa("cd", ["infra"], { stdio: "inherit" });
-  // execa("curl -o main.tf https://raw.githubusercontent.com/your-repo/terraform-templates/main/" + template + "/main.tf", { stdio: "inherit" });
-
-  await execa("terraform", ["init"], { stdio: "inherit" });
-}
