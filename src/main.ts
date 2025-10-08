@@ -1,7 +1,8 @@
 import { select } from "@inquirer/prompts";
 import { Command } from "commander";
-import { initProject, initTerraformProject } from "./commands";
+import { createS3Bucket, initProject } from "./template-writers";
 import { bootstrapTerraformRemoteState } from "./aws-bootstrap/bootstrap-aws-terraform-remote-state";
+import { initTerraformProject } from "./tf-commands";
 
 const program = new Command();
 
@@ -23,14 +24,18 @@ program
         // { name: "GCP compute", value: "gcp-compute" },
         // { name: "Azure web app", value: "azure-webapp" }
       ],
-    })
+    });
     console.log(`Creating project with template: ${template}`);
     console.log(`Creating project with code name: ${code_name}`);
     //await initTerraformProject(template)
-    await bootstrapTerraformRemoteState(code_name + "-tfstate-bucket", code_name + "-tfstate-locks", region);
+    await bootstrapTerraformRemoteState(
+      code_name + "-tfstate-bucket",
+      code_name + "-tfstate-locks",
+      region
+    );
     initProject(code_name, region);
     await initTerraformProject(template);
-});
+  });
 
 // program
 //   .command("init")
@@ -45,7 +50,20 @@ program
   .argument("<project>", "project name")
   .option("-t, --template <name>", "template name", "aws-serverless")
   .action((project: string, options: { template: string }) => {
-    console.log(`Creating project: ${project} with template: ${options.template}`);
+    console.log(
+      `Creating project: ${project} with template: ${options.template}`
+    );
+  });
+
+program
+  .command("s3")
+  .argument("<code_name>", "project code name (e.g., myapp, tks, etc.)")
+  .argument("<region>", "AWS region")
+  .action((code_name: string, region: string) => {
+    console.log(
+      `Creating S3 bucket for project: ${code_name} in region: ${region}`
+    );
+    createS3Bucket(code_name, region);
   });
 
 program.parse(process.argv);

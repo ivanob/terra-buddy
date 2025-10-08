@@ -1,0 +1,83 @@
+# Create the S3 bucket first (Fixes dependency issue)
+resource "aws_s3_bucket" "<%= it.projectCodename %>_bucket" {
+  bucket = var.bucket_name
+}
+
+# Configure S3 public access settings (should come after bucket creation)
+# resource "aws_s3_bucket_public_access_block" "ticketsoft" {
+#   bucket                  = aws_s3_bucket.ticketsoft_bucket.id
+#   block_public_acls       = false
+#   block_public_policy     = false  # This allows public policies
+#   ignore_public_acls      = false
+#   restrict_public_buckets = false
+# }
+
+# Create the IAM user
+# resource "aws_iam_user" "s3_user" {
+#   name = var.user_name
+# }
+
+# # Create an IAM policy for S3 access
+# resource "aws_iam_policy" "s3_access_policy" {
+#   name        = "${var.user_name}_tk_s3_access_policy"
+#   description = "Policy to allow read/write access to S3 bucket"
+#   policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Effect   = "Allow",
+#         Action   = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"], 
+#         Resource = ["arn:aws:s3:::${var.bucket_name}/*"]
+#       },
+#       {
+#         Effect   = "Allow",
+#         Action   = ["s3:ListBucket"],
+#         Resource = ["arn:aws:s3:::${var.bucket_name}"]
+#       }
+#     ]
+#   })
+# }
+
+# # Attach the policy to the IAM user
+# resource "aws_iam_user_policy_attachment" "s3_user_policy_attachment" {
+#   user       = aws_iam_user.s3_user.name
+#   policy_arn = aws_iam_policy.s3_access_policy.arn
+# }
+
+# # Create access keys for the IAM user
+# resource "aws_iam_access_key" "s3_user_access_key" {
+#   user = aws_iam_user.s3_user.name
+#   depends_on = [aws_iam_user_policy_attachment.s3_user_policy_attachment]
+# }
+
+# # (OPTIONAL) Bucket policy to allow public access (Caution: Makes bucket public!)
+# resource "aws_s3_bucket_policy" "public_access_policy" {
+#   bucket = var.bucket_name
+#   depends_on = [aws_s3_bucket_public_access_block.ticketsoft]  # Ensures execution order
+
+#   policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Effect    = "Allow",
+#         Principal = "*",
+#         Action    = "s3:GetObject",
+#         Resource  = "arn:aws:s3:::${var.bucket_name}/*"
+#       }
+#     ]
+#   })
+# }
+
+# resource "aws_s3_bucket_cors_configuration" "ticketsoft_staging_cors" {
+#   bucket = aws_s3_bucket.ticketsoft_bucket.id
+
+#   cors_rule {
+#     allowed_headers = ["*"]
+#     allowed_methods = ["GET", "PUT", "POST"]
+#     allowed_origins = [
+#       "http://localhost:5173",
+#       "https://develop--ticket-soft-promoter.netlify.app/"]
+#     expose_headers  = []
+#     max_age_seconds = 3000
+#   }
+# }

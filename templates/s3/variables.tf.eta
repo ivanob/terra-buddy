@@ -1,0 +1,16 @@
+
+# Variables
+variable "bucket_name" {
+  description = "Name of the pre-existing S3 bucket to allow access to."
+  type        = string
+}
+
+variable "user_name" {
+  description = "IAM user to be created for accessing S3 bucket."
+  type        = string
+}
+
+variable "aws_region" {
+  description = "AWS region where the S3 bucket is located."
+  type        = string
+}
