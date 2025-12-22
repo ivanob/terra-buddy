@@ -1,0 +1,6 @@
+module "s3" {
+  source = "./s3"
+  bucket_name = "<%= it.projectCodename %>-<%= it.bucketName %>-${local.env}" 
+  user_name = "tk-s3-user-${local.env}"
+  aws_region = var.region
+}

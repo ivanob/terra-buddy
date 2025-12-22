@@ -1,8 +1,8 @@
 import { select } from "@inquirer/prompts";
 import { Command } from "commander";
-import { createS3Bucket, initProject } from "./template-writers";
+import { createS3Bucket, initProject } from "./writing-files/template-writers";
 import { bootstrapTerraformRemoteState } from "./aws-bootstrap/bootstrap-aws-terraform-remote-state";
-import { initTerraformProject } from "./tf-commands";
+import { applyTerraformProject } from "./tf-commands";
 
 const program = new Command();
 
@@ -20,21 +20,20 @@ program
     const template = await select({
       message: "Select a template:",
       choices: [
-        { name: "AWS serverless + Typescript", value: "aws-ts-serverless" },
+        { name: "AWS", value: "aws-ts-serverless" },
         // { name: "GCP compute", value: "gcp-compute" },
         // { name: "Azure web app", value: "azure-webapp" }
       ],
     });
     console.log(`Creating project with template: ${template}`);
     console.log(`Creating project with code name: ${code_name}`);
-    //await initTerraformProject(template)
-    await bootstrapTerraformRemoteState(
-      code_name + "-tfstate-bucket",
-      code_name + "-tfstate-locks",
-      region
-    );
+    // await bootstrapTerraformRemoteState(
+    //   code_name + "-tfstate-bucket",
+    //   code_name + "-tfstate-locks",
+    //   region
+    // );
     initProject(code_name, region);
-    await initTerraformProject(template);
+    //await applyTerraformProject(template);
   });
 
 // program

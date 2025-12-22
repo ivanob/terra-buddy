@@ -1,8 +1,8 @@
 import { execa } from "execa";
 
-export const initTerraformProject = async (template: string) => {
+export const applyTerraformProject = async (template: string) => {
   // Logic to initialize a Terraform project based on the selected template
-  console.log(`Initializing Terraform project with template: ${template}`);
+  console.log(`Applying Terraform project with template: ${template}`);
 
   await execa("rm", ["-rf", "infra/.terraform"]);
   await execa("terraform", ["init"], { cwd: "infra", stdio: "inherit" });

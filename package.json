@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "clean": "rm -rf ./dist",
     "dev": "tsx src/main.ts",
     "build": "tsc",
@@ -17,7 +17,8 @@
   "devDependencies": {
     "@types/node": "^24.6.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.902.0",

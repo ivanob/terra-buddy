@@ -1,0 +1,5 @@
+# This file contains the provider configuration for AWS.
+provider "aws" {
+  region = var.region # This variable comes from the package.json script. ie: terraform apply -var=\"region=eu-west-1\"
+  profile = var.aws_profile
+}

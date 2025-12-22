@@ -4,13 +4,21 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 
+/**
+ * These are all the utilities to manipulate templates and write files
+ */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const eta = new Eta({ views: path.join(__dirname, "../templates") });
 const outputFolder = "infra/";
 
-const fetchTemplate = (
-  templateName: string,
+export const enum Templates {
+  MAIN = "main.tf.eta",
+  Subtract = "SUBTRACT"
+}
+
+export const fetchTemplate = (
+  templateName: Templates,
   templateData: Record<string, any>
 ) => {
   const output = eta.render(`./${templateName}`, templateData);
@@ -27,18 +35,31 @@ const writeFilesSync = (dir: string, filename: string, content: string) => {
 };
 
 export const useTemplate = (
-  templateName: string,
+  templateName: Templates,
   templateData: Record<string, any>
-) => {
-  const contentTemplate = fetchTemplate(`${templateName}.eta`, templateData);
+): string => {
+  const contentTemplate = fetchTemplate(templateName, templateData);
   writeFilesSync(outputFolder, templateName, contentTemplate);
+  return contentTemplate;
 };
 
 export const useTemplateMultiple = (
-  templates: string[],
+  templates: Templates[],
   templateData: Record<string, any>
 ) => {
   templates.forEach((templateName) => {
     useTemplate(templateName, templateData);
   });
+};
+
+export const appendToFile = (filePath: string, contentToAdd: string) => {
+  // Check if file exists
+  if (fs.existsSync(filePath)) {
+    const existingContent = fs.readFileSync(filePath, 'utf8');
+    // Combine existing + new content
+    const updatedContent = existingContent + '\n' + contentToAdd;
+    fs.writeFileSync(filePath, updatedContent);
+  } else {
+    fs.writeFileSync(filePath, contentToAdd);
+  }
 };
