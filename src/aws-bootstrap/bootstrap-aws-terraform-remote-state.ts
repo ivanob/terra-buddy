@@ -18,14 +18,14 @@ let s3: S3Client | any = undefined;
 let dynamodb: DynamoDBClient | any = undefined;
 
 async function ensureS3Bucket(bucketName: string, region: string) {
-  console.log(`🔍 Checking S3 bucket for terraform state: ${bucketName}`);
+  console.log(`Checking S3 bucket for terraform state: ${bucketName}`);
 
   try {
     await s3.send(new HeadBucketCommand({ Bucket: bucketName }));
-    console.log("✅ Bucket for terraform state already exists");
+    console.log("Bucket for terraform state already exists");
   } catch (err: any) {
     if (err?.$metadata?.httpStatusCode === 404 || err.name === "NotFound") {
-      console.log("🪣 Bucket not found, creating...");
+      console.log("Bucket not found, creating...");
       const createCmd = new CreateBucketCommand({
         Bucket: bucketName,
         ...(region !== "us-east-1" && {
@@ -35,13 +35,13 @@ async function ensureS3Bucket(bucketName: string, region: string) {
         }),
       });
       await s3.send(createCmd);
-      console.log("✅ Bucket for terraform state created");
+      console.log("Bucket for terraform state created");
     } else {
       throw err;
     }
   }
 
-  console.log("🔒 Applying public access block");
+  console.log("Applying public access block");
   await s3.send(
     new PutPublicAccessBlockCommand({
       Bucket: bucketName,
@@ -54,7 +54,7 @@ async function ensureS3Bucket(bucketName: string, region: string) {
     })
   );
 
-  console.log("🔐 Enabling default encryption (AES256)");
+  console.log("Enabling default encryption (AES256)");
   await s3.send(
     new PutBucketEncryptionCommand({
       Bucket: bucketName,
@@ -68,7 +68,7 @@ async function ensureS3Bucket(bucketName: string, region: string) {
     })
   );
 
-  console.log("🧾 Enabling versioning");
+  console.log("Enabling versioning");
   await s3.send(
     new PutBucketVersioningCommand({
       Bucket: bucketName,
@@ -78,13 +78,13 @@ async function ensureS3Bucket(bucketName: string, region: string) {
 }
 
 async function ensureDynamoDBTable(ddbTableName: string) {
-  console.log(`🔍 Checking DynamoDB table: ${ddbTableName}`);
+  console.log(`Checking DynamoDB table: ${ddbTableName}`);
   try {
     await dynamodb.send(new DescribeTableCommand({ TableName: ddbTableName }));
-    console.log("✅ Table already exists");
+    console.log("Table already exists");
   } catch (err: any) {
     if (err.name === "ResourceNotFoundException") {
-      console.log("📦 Creating DynamoDB table for terraform state...");
+      console.log("Creating DynamoDB table for terraform state...");
       await dynamodb.send(
         new CreateTableCommand({
           TableName: ddbTableName,
@@ -95,14 +95,12 @@ async function ensureDynamoDBTable(ddbTableName: string) {
           KeySchema: [{ AttributeName: "LockID", KeyType: "HASH" }],
         })
       );
-      console.log(
-        "⏳ Waiting for table for terraform state to become ACTIVE..."
-      );
+      console.log("Waiting for table for terraform state to become ACTIVE...");
       await waitUntilTableExists(
         { client: dynamodb, maxWaitTime: 60 },
         { TableName: ddbTableName }
       );
-      console.log("✅ Table created and ready");
+      console.log("Table created and ready");
     } else {
       throw err;
     }
@@ -120,19 +118,19 @@ export const bootstrapTerraformRemoteState = async (
   await ensureDynamoDBTable(ddbTableName);
 
   console.log(`
-✅ Terraform remote state backend is ready. Use this block:
+    Terraform remote state backend is ready. Use this block:
 
-terraform {
-  backend "s3" {
-    bucket         = "${bucketName}"
-    key            = "staging/terraform.tfstate"
-    region         = "${region}"
-    encrypt        = true
-    dynamodb_table = "${ddbTableName}"
-  }
-}
+    terraform {
+      backend "s3" {
+        bucket         = "${bucketName}"
+        key            = "staging/terraform.tfstate"
+        region         = "${region}"
+        encrypt        = true
+        dynamodb_table = "${ddbTableName}"
+      }
+    }
 
-Then run:
-  terraform init -reconfigure
-`);
+    Then run:
+      terraform init -reconfigure
+  `);
 };

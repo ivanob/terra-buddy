@@ -2,11 +2,11 @@ terraform {
   required_version = ">= 1.3"
 
   backend "s3" { # This is the configuration to use a remote-state instead of a local one. So we dont rely on terraform.tfstate.d
-    bucket         = "undefined-tfstate-bucket"
+    bucket         = "abc123-tfstate-bucket"
     key            = "staging/terraform.tfstate"
     region         = "fake-region-1"
     encrypt        = true
-    dynamodb_table = "undefined-tfstate-locks" 
+    dynamodb_table = "abc123-tfstate-locks" 
   }
 }
 

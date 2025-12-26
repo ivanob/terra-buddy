@@ -13,8 +13,11 @@ const eta = new Eta({ views: path.join(__dirname, "../templates") });
 const outputFolder = "infra/";
 
 export const enum Templates {
-  MAIN = "main.tf.eta",
-  Subtract = "SUBTRACT"
+  MAIN = "main/main.tf.eta",
+  VARIABLES = "main/variables.tf.eta",
+  PROVIDERS = "main/providers.tf.eta",
+  DEV_ENV_PARAMS = "main/vars-dev.tfvars.eta",
+  PROD_ENV_PARAMS = "main/vars-prod.tfvars.eta",
 }
 
 export const fetchTemplate = (
@@ -39,15 +42,31 @@ export const useTemplate = (
   templateData: Record<string, any>
 ): string => {
   const contentTemplate = fetchTemplate(templateName, templateData);
-  writeFilesSync(outputFolder, templateName, contentTemplate);
   return contentTemplate;
 };
+
+export const writeTemplateToFile = (
+  templateContent: string,
+  filename: string
+) => {
+  writeFilesSync(outputFolder, filename.slice(0, -4), templateContent);
+};
+
+export const writeMultipleTemplatesToFiles = (
+  templates: Templates[],
+  templateData: Record<string, any>
+) => {
+  templates.forEach((template) => {
+    const content = useTemplate(template, templateData);
+    writeTemplateToFile(content, template);
+  });
+}
 
 export const useTemplateMultiple = (
   templates: Templates[],
   templateData: Record<string, any>
 ) => {
-  templates.forEach((templateName) => {
+  return templates.forEach((templateName) => {
     useTemplate(templateName, templateData);
   });
 };

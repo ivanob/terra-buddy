@@ -1,0 +1,11 @@
+variable "region" {
+  description = "The AWS region to deploy in"
+}
+
+variable "account_id" {
+  description = "The AWS account ID"
+}
+
+variable "aws_profile" { # This profile is defined in the ~/.aws/credentials file
+  description = "The AWS profile to use for the deployment"
+}
