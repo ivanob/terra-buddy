@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, statSync } from "fs";
-import { addNewS3Bucket, isS3Initialised } from "./tf-files-utils";
-import { fetchTemplate, Templates, useTemplate, useTemplateMultiple, writeMultipleTemplatesToFiles } from "../utils";
+import { addNewS3Bucket, isS3Initialised } from "./tf-files-utils.js";
+import { fetchTemplate, Templates, useTemplate, useTemplateMultiple, writeMultipleTemplatesToFiles } from "../utils.js";
 
 /**
  * This will initialize the project structure: create a main.tf and variables.tf
@@ -32,7 +32,8 @@ export const initProject = (projectCodename: string, region: string) => {
 export const createS3Bucket = (projectCodename: string, region: string) => {
   if (!isS3Initialised()) {
     //Check if any bucket exists already, so we dont need to copy the general files again
-    useTemplateMultiple(["s3/variables.tf", "s3/outputs.tf", "s3/main.tf"], {
+    //useTemplateMultiple(["s3/variables.tf", "s3/outputs.tf", "s3/main.tf"], {
+    useTemplateMultiple([Templates.MAIN], {
       projectCodename,
       region,
     });

@@ -1,8 +1,9 @@
+#!/usr/bin/env node
 import { select } from "@inquirer/prompts";
 import { Command } from "commander";
-import { createS3Bucket, initProject } from "./writing-files/template-writers";
-import { bootstrapTerraformRemoteState } from "./aws-bootstrap/bootstrap-aws-terraform-remote-state";
-import { applyTerraformProject } from "./tf-commands";
+import { createS3Bucket, initProject } from "./writing-files/template-writers.js";
+import { bootstrapTerraformRemoteState } from "./aws-bootstrap/bootstrap-aws-terraform-remote-state.js";
+import { applyTerraformProject } from "./tf-commands.js";
 
 const program = new Command();
 

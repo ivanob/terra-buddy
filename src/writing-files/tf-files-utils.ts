@@ -3,7 +3,7 @@
  * add new resources, etc.
  */
 
-import { appendToFile, fetchTemplate } from "../utils";
+import { appendToFile, fetchTemplate, Templates } from "../utils.js";
 
 export const isS3Initialised = (): boolean => {
   //Check if the folder s3 exists in infra
@@ -11,7 +11,7 @@ export const isS3Initialised = (): boolean => {
 };
 
 export const addNewS3Bucket = (projectCodename: string, bucketName: string ) => {
-  const contentNewS3 = fetchTemplate("main-add-s3.tf.eta", {
+  const contentNewS3 = fetchTemplate(Templates.MAIN, {
     projectCodename,
     bucketName,
   });

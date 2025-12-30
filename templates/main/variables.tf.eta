@@ -2,6 +2,8 @@ variable "region" {
   description = "The AWS region to deploy in"
 }
 
+# Pay attention to your `echo $AWS_PROFILE` variable in your machine.
+# to remove it use `unset AWS_PROFILE`
 variable "account_id" {
   description = "The AWS account ID"
 }
