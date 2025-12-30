@@ -1,6 +1,8 @@
 # terra-buddy
 
-![alt text](./assets/logo-reduced.png "terra-buddy")
+<p align="center">
+  <img src="./assets/logo-reduced.png" alt="alt text">
+</p>
 >Opinionated CLI to help you scaffold projects with terraform for AWS.
 
 The goal of this tool is to help create/start a project from scratch with a number of decisions about technology and structure, so it is heavily opinionated. Some of the decisions:
