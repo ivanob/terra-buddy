@@ -11,7 +11,7 @@
     "clean": "rm -rf ./dist",
     "dev": "tsx src/main.ts",
     "build": "tsc",
-    "prod": "pnpm run clean && pnpm run build && node dist/main.js"
+    "prod": "pnpm run clean && pnpm run build && npm link"
   },
   "keywords": [],
   "author": "",

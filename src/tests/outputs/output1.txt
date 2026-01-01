@@ -13,3 +13,8 @@ terraform {
 locals {
   env = terraform.workspace  # Will be "dev" or "prod"
 }
+
+# This is the s3 bucket for the state
+resource "aws_s3_bucket" "abc123-tfstate-bucket" {
+  bucket = abc123-tfstate-bucket
+}

@@ -4,6 +4,12 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 
+export interface TfVarsConfig {
+  region: string;
+  account_id: string;
+  aws_profile: string;
+}
+
 /**
  * These are all the utilities to manipulate templates and write files
  */
@@ -81,4 +87,21 @@ export const appendToFile = (filePath: string, contentToAdd: string) => {
   } else {
     fs.writeFileSync(filePath, contentToAdd);
   }
+};
+
+export const parseTfVars = (filePath: string): TfVarsConfig => {
+  const content = fs.readFileSync(filePath, 'utf8');
+  const config: Partial<TfVarsConfig> = {};
+  
+  content.split('\n').forEach(line => {
+    const match = line.match(/(\w+)\s*=\s*"([^"]+)"/);
+    if (match) {
+      const [, key, value] = match;
+      if (key && value) {
+        config[key as keyof TfVarsConfig] = value;
+      }
+    }
+  });
+  
+  return config as TfVarsConfig;
 };
