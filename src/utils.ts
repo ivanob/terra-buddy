@@ -19,11 +19,17 @@ const eta = new Eta({ views: path.join(__dirname, "../templates") });
 const outputFolder = "infra/";
 
 export const enum Templates {
+  //Templates to initialize project structure
   MAIN = "main/main.tf.eta",
   VARIABLES = "main/variables.tf.eta",
   PROVIDERS = "main/providers.tf.eta",
   DEV_ENV_PARAMS = "main/vars-dev.tfvars.eta",
   PROD_ENV_PARAMS = "main/vars-prod.tfvars.eta",
+  //Templates for S3 bucket
+  S3_MAIN = "s3/main.tf.eta",
+  S3_VARIABLES = "s3/variables.tf.eta",
+  S3_OUTPUTS = "s3/outputs.tf.eta",
+  S3_ADD_TO_MAIN = "s3/main-add-s3.tf.eta",
 }
 
 export const fetchTemplate = (
