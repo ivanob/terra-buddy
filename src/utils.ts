@@ -66,13 +66,24 @@ export const writeTemplateToFile = (
 
 export const writeMultipleTemplatesToFiles = (
   templates: Templates[],
-  templateData: Record<string, any>
+  templateData: Record<string, any>,
+  putInRootFolder: boolean = false // For main files, we dont want to put in infra/main
 ) => {
   templates.forEach((template) => {
     const content = useTemplate(template, templateData);
-    writeTemplateToFile(content, template);
+    writeTemplateToFile(content, putInRootFolder ? template : removeRootFromPath(template)
+    );
   });
 }
+
+const removeRootFromPath = (templatePath: string): string => {
+  return templatePath.split('/').slice(1).join('/');
+}
+
+export const appendTemplateToMain = (templateName: Templates, templateData: Record<string, any>) => {
+  const content = useTemplate(templateName, templateData);
+  appendToFile("infra/main.tf", content);
+};
 
 export const useTemplateMultiple = (
   templates: Templates[],

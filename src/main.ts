@@ -18,9 +18,9 @@ program
 // typed options and arguments
 program
   .command("init")
-  .argument("<code_name>", "project code name (e.g., myapp, tks, etc.)")
+  .argument("<projectCodename>", "project code name (e.g., myapp, tks, etc.)")
   .argument("<region>", "AWS region")
-  .action(async (code_name: string, region: string) => {
+  .action(async (projectCodename: string, region: string) => {
     const template = await select({
       message: "Select a template:",
       choices: [
@@ -30,9 +30,9 @@ program
       ],
     });
     console.log(`Creating project with template: ${template}`);
-    console.log(`Creating project with code name: ${code_name}`);
-    initProject(code_name, region);
-    initializeConfigFile(code_name, region);
+    console.log(`Creating project with code name: ${projectCodename}`);
+    initProject(projectCodename, region);
+    initializeConfigFile(projectCodename, region);
   });
 
 // program

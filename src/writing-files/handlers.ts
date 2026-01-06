@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, statSync } from "fs";
 import { addNewS3Bucket, isProjectInitialized, isS3Initialised, readConfigFile, type Config } from "./tf-files-utils.js";
 import {
+  appendTemplateToMain,
   fetchTemplate,
   Templates,
   useTemplate,
@@ -51,10 +52,11 @@ export const createS3Bucket = () => {
         Templates.S3_MAIN,
         Templates.S3_VARIABLES,
         Templates.S3_OUTPUTS,
-        Templates.S3_ADD_TO_MAIN,
+        //Templates.S3_ADD_TO_MAIN,
       ],
       config
     );
+    appendTemplateToMain(Templates.S3_ADD_TO_MAIN, config);
   }
   addNewS3Bucket(config.projectCodename, "nuevo");
 };
@@ -62,19 +64,18 @@ export const createS3Bucket = () => {
 
 export const executeTerraform = async () => {
   // Read config from vars-dev.tfvars
-  const tfVarsPath = path.join(process.cwd(), 'infra/main/vars-dev.tfvars');
-  const config = parseTfVars(tfVarsPath);
-  const code_name = 'bbb';
+  const config = readConfigFile();
+  const projectCodename = config.projectCodename;
   const region = config.region;
   
-  console.log(`Executing project: ${code_name} in region: ${region}`);
+  console.log(`Executing project: ${projectCodename} in region: ${region}`);
   const firstRun = true;
   if (firstRun) {
     console.log("Bootstrapping terraform remote state...");
     try{
       await bootstrapTerraformRemoteState(
-        code_name + "-tfstate-bucket",
-        code_name + "-tfstate-locks",
+        projectCodename + "-tfstate-bucket",
+        projectCodename + "-tfstate-locks",
         region
       );
     }
